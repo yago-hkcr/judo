@@ -1,5 +1,5 @@
 // ===== EDITE AQUI OS DADOS DA SUA ACADEMIA =====
-const CFG={nome:'Sensei Jose Vitor',whats:'5519992726069',endereco:'R. Tomaz Jasso, 1276 - Jardim Cruzeiro do Sul, Jaguariúna - SP, 13917-144',horarios:'Seg a sex, 05h–12h e 14h–22h · Sáb, 08h–12h · Dom fechado'};
+const CFG={nome:'Sensei José Vitor',whats:'5519992726069',endereco:'R. Tomaz Jasso, 1276 - Jardim Cruzeiro do Sul, Jaguariúna - SP, 13917-144',horarios:'Seg a sex, 05h–12h e 14h–22h · Sáb, 08h–12h · Dom fechado'};
 // ================================================
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('#nm').textContent='柔道 · '+CFG.nome;$('#ad').textContent=CFG.endereco+' · '+CFG.horarios;document.title=CFG.nome;
