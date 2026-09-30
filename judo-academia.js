@@ -116,3 +116,29 @@ addEventListener('keydown',event=>{if(!opened)return;if(event.key==='Escape'){cl
 addEventListener('keyup',event=>{if([' ','ArrowUp'].includes(event.key))endJump()});
 addEventListener('offline',openGame);addEventListener('online',()=>{if(navigator.onLine)closeGame()});if(!navigator.onLine)openGame();
 })();
+
+(()=>{
+const interactiveSelector='button,.btn,summary';
+document.addEventListener('pointerdown',event=>{
+	const target=event.target.closest(interactiveSelector);
+	if(!target||target.closest('#gameCanvas'))return;
+	target.classList.remove('is-pressing','is-rippling');
+	void target.offsetWidth;
+	target.classList.add('is-pressing');
+	if(target.matches('.btn')){
+		const bounds=target.getBoundingClientRect();
+		target.style.setProperty('--motion-x',event.clientX-bounds.left+'px');
+		target.style.setProperty('--motion-y',event.clientY-bounds.top+'px');
+		target.classList.add('is-rippling');
+	}
+});
+document.addEventListener('animationend',event=>{
+	if(event.animationName==='action-press'||event.animationName==='action-ripple')event.target.classList.remove(event.animationName==='action-press'?'is-pressing':'is-rippling');
+});
+$$('details').forEach(detail=>detail.addEventListener('toggle',()=>{
+	if(detail.open){detail.classList.remove('is-activating');void detail.offsetWidth;detail.classList.add('is-activating')}
+}));
+['#tgl','#sound'].forEach(selector=>$(selector)?.addEventListener('click',event=>{
+	const control=event.currentTarget;control.classList.remove('nav-pulse');void control.offsetWidth;control.classList.add('nav-pulse')
+}));
+})();
