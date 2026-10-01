@@ -1,9 +1,12 @@
-const CACHE_NAME = 'sensei-judo-offline-v4';
+const CACHE_NAME = 'sensei-judo-offline-v6';
 const APP_FILES = [
   './index.html',
   './judo-academia.html',
   './judo-academia.css',
-  './judo-academia.js'
+  './judo-academia.js',
+  './jornada.html',
+  './jornada.css',
+  './jornada.js'
 ];
 
 self.addEventListener('install', event => {
