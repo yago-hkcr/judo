@@ -4,7 +4,8 @@ const CFG={nome:'Sensei José Vitor',whats:'5519992726069',endereco:'R. Tomaz Ja
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const preferenceKey='judo-academia-preferences';let preferences={};try{const saved=JSON.parse(localStorage.getItem(preferenceKey)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))preferences=saved}catch{}function savePreference(key,value){preferences[key]=value;try{localStorage.setItem(preferenceKey,JSON.stringify(preferences))}catch{}}
 const systemTheme=matchMedia('(prefers-color-scheme: light)'),themeColorMeta=$('meta[name="theme-color"]');let savedTheme=preferences.theme;if(savedTheme!=='light'&&savedTheme!=='dark'){try{savedTheme=localStorage.getItem('judo-theme')}catch{}}function setTheme(theme){document.documentElement.dataset.theme=theme;themeColorMeta.content=theme==='dark'?'#0b0b0f':'#f5f1e8'}const explicitTheme=savedTheme==='light'||savedTheme==='dark';setTheme(explicitTheme?savedTheme:systemTheme.matches?'light':'dark');if(explicitTheme)savePreference('theme',savedTheme);systemTheme.addEventListener('change',e=>{if(preferences.theme!=='light'&&preferences.theme!=='dark')setTheme(e.matches?'light':'dark')});
-$('#nm').textContent='柔道 · '+CFG.nome;$('#ad').textContent=CFG.endereco+' · '+CFG.horarios;document.title=CFG.nome;
+$('#nm').textContent='柔道 · '+CFG.nome;const mapsUrl=new URL('https://www.google.com/maps/search/');mapsUrl.searchParams.set('api','1');mapsUrl.searchParams.set('query',CFG.endereco);$('#mapLink').href=mapsUrl.href;$('#academyAddress').textContent=CFG.endereco;$('#academyHours').textContent=CFG.horarios;document.title=CFG.nome;
+const instagramQrParts=['iVBORw0KGgoAAAANSUhEUgAAANwAAADcAQMAAAAhlF3CAAAABlBMVEX///8RERQB','Je1UAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAB3ElEQVRYhe1YQZKDMAxzh0OOfUKe','ws8K/CxPyRM45sDglRQoO93zbr0z9XQKiTjgIMtKzD7xe3F3xGa3ludUMbJ7SZza','Y4IFf1temllys3FYRzxk9ggKupcNN3lxHxwjT3XyGhnMroXfkMo/ALnOk/cooUHR','ZE+OVHwdMfrBoUCgShCk5g+MJqlf6jMQeASWminw0WKv8aeghni5VG946zsKzfXi','c1jQhwq9xSQpjAlk9W3hQ4FlWI3dwaaG6+ir8fZIJRrIfmCDz5Z3A28NoKmthQRF','jFNvnc+5sgoLUrYgWJ3U0ltjYkFBCVZyWgV9Bn2DOSRo46aLGhgovt1Ls8eTQ8FA','DdFoNew+oV15vgOEf7WhTpwhaWlhqWd7SLAvLy3szWkF8GiT/Y4JjiRr1TDj1juL','T5oEA48qo3HxY3vQXkswEFi6L1R0BfOLQ/FAlSDEdk4VedDFqlcEBVl3WVamsq2x','BClmUUGYg3r62yLSoPk+QoI9SOND3liT59brHeCxX6Fb8Wvn+t1whwKLsYepO2Se','CqxKxaOCOhWA2C4y3Cw0v6osJijByv0ztOzP06yY4MxTATGaZ2/LabjjgaQJFQw+','gQrGyUvBooFHCUrBtr7wT1cTDvzEW+ILIJGVkSdM7/0AAAAASUVORK5CYII='];$('.instagram-qr img').src='data:image/png;base64,'+instagramQrParts.join('');
 const audio={on:preferences.sound===true,ctx:null,beep(){if(!this.on)return;this.ctx??=new AudioContext;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.value=520;o.type='sine';g.gain.setValueAtTime(.0001,this.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.035,this.ctx.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,this.ctx.currentTime+.16);o.connect(g).connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+.18)}};if(audio.on){$('#sound').textContent='♫ on';$('#sound').setAttribute('aria-label','Desativar sons');$('#sound').setAttribute('aria-pressed','true')}
 let loaded=0;const loader=$('#loader'),percent=$('#loadPercent'),loadBar=$('#loadBar');const loadTimer=setInterval(()=>{loaded=Math.min(100,loaded+Math.ceil(Math.random()*9));percent.textContent=loaded;loadBar.style.width=loaded+'%';if(loaded>=100){clearInterval(loadTimer);setTimeout(()=>{loader.classList.add('done');$('.hero').classList.add('is-ready')},350)}},55);
 const h1=$('#h1'),words=h1.textContent.trim().split(' ');h1.innerHTML=words.map((w,i)=>'<span class="word" style="--i:'+i+'"><span>'+(i>3?'<em>'+w+'</em>':w)+'</span></span>').join(' ');
@@ -21,6 +22,18 @@ $('#fb').onclick=()=>{const b=$('#fb'),n=$('#fn').value.trim(),a=$('#fa').value;
 $$('details').forEach(d=>d.addEventListener('toggle',()=>{d.classList.toggle('is-open',d.open);if(d.open)audio.beep()}));let clicks=0;$('#kj').addEventListener('click',()=>{clicks++;if(clicks===5){clicks=0;petals.push(...Array.from({length:70},()=>({x:Math.random()*innerWidth,y:-10,r:2+Math.random()*6,v:2+Math.random()*3,d:Math.random(),a:Math.random()*6.28})));toast('Osu! O tatame está vivo. 🥋')}});
 
 if('serviceWorker' in navigator&&isSecureContext)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+(()=>{
+	const badge=document.querySelector('.instagram-mark');
+	if(!badge)return;
+	const logo=document.createElement('img');
+	logo.className='fpj-logo';
+	logo.alt='Símbolo oficial da Federação Paulista de Judô';
+	logo.width=100;logo.height=112;
+	logo.decoding='async';
+	logo.onerror=()=>{const fallback=document.createElement('span');fallback.className='fpj-logo-fallback';fallback.textContent='FPJ';fallback.setAttribute('aria-label','Federação Paulista de Judô');logo.replaceWith(fallback)};
+	logo.src='https://fpj.com.br/wp-content/uploads/2022/03/logotipo-fpj.png';
+	badge.replaceWith(logo);
+})();
 (()=>{
 const overlay=$('#offlineGame'),canvas=$('#gameCanvas'),gameCtx=canvas.getContext('2d'),scoreLabel=$('#gameScore'),bestLabel=$('#gameBest'),levelLabel=$('#gameLevel'),statusLabel=$('#gameStatus'),ground=222,judoka={x:92,y:ground-52,w:38,h:52,vy:0},barriers=[];
 const palette={},basePalette={},colorProperties={background:'--runner-bg',wall:'--runner-wall',beam:'--runner-beam',floor:'--runner-floor',mat:'--runner-mat',mark:'--runner-mark',ink:'--runner-ink',gi:'--runner-gi',giShadow:'--runner-gi-shadow',belt:'--runner-belt',skin:'--runner-skin',red:'--runner-red',gold:'--runner-gold',shadow:'--runner-shadow',window:'--runner-window',windowGrid:'--runner-window-grid',light:'--runner-light',pad:'--runner-pad',padShadow:'--runner-pad-shadow'},particles=[];
@@ -109,7 +122,7 @@ function tick(time){
 }
 function openGame(){if(opened)return;overlay.hidden=false;document.body.classList.add('game-open');opened=true;resizeCanvas();start();gameSound.startMusic()}
 function closeGame(){overlay.hidden=true;document.body.classList.remove('game-open');opened=false;running=false;jumpHeld=false;cancelAnimationFrame(frame);gameSound.stopMusic()}
-overlay.addEventListener('pointerdown',event=>{if(gameOver){event.preventDefault();start();return}if(event.target===canvas)beginJump(event)});
+overlay.addEventListener('pointerdown',event=>{if(gameOver){event.preventDefault();start();return}beginJump(event)});
 addEventListener('pointerup',endJump);addEventListener('pointercancel',endJump);
 addEventListener('resize',()=>{if(opened)resizeCanvas()});
 addEventListener('keydown',event=>{if(!opened)return;if(event.key==='Escape'){closeGame();return}if([' ','ArrowUp'].includes(event.key)){event.preventDefault();beginJump(event)}});
@@ -118,7 +131,7 @@ addEventListener('offline',openGame);addEventListener('online',()=>{if(navigator
 })();
 
 (()=>{
-const interactiveSelector='button,.btn,summary';
+const interactiveSelector='button,.btn,summary,.card,.academy-map,.instagram-link,.instagram-qr';
 document.addEventListener('pointerdown',event=>{
 	const target=event.target.closest(interactiveSelector);
 	if(!target||target.closest('#gameCanvas'))return;
@@ -133,7 +146,7 @@ document.addEventListener('pointerdown',event=>{
 	}
 });
 document.addEventListener('animationend',event=>{
-	if(event.animationName==='action-press'||event.animationName==='action-ripple')event.target.classList.remove(event.animationName==='action-press'?'is-pressing':'is-rippling');
+	if(event.animationName==='action-press'||event.animationName==='action-ripple'||event.animationName==='surface-tap')event.target.classList.remove(event.animationName==='action-ripple'?'is-rippling':'is-pressing');
 });
 $$('details').forEach(detail=>detail.addEventListener('toggle',()=>{
 	if(detail.open){detail.classList.remove('is-activating');void detail.offsetWidth;detail.classList.add('is-activating')}
@@ -141,4 +154,29 @@ $$('details').forEach(detail=>detail.addEventListener('toggle',()=>{
 ['#tgl','#sound'].forEach(selector=>$(selector)?.addEventListener('click',event=>{
 	const control=event.currentTarget;control.classList.remove('nav-pulse');void control.offsetWidth;control.classList.add('nav-pulse')
 }));
+})();
+
+(()=>{
+	const contact=$('.academy-contact');
+	if(!contact||reduce||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+	let framePending=0,pointerX=0,pointerY=0;
+	contact.addEventListener('pointermove',event=>{
+		if(event.pointerType==='touch')return;
+		pointerX=event.clientX;pointerY=event.clientY;
+		if(framePending)return;
+		framePending=requestAnimationFrame(()=>{
+			framePending=0;
+			const bounds=contact.getBoundingClientRect(),x=Math.min(1,Math.max(0,(pointerX-bounds.left)/bounds.width)),y=Math.min(1,Math.max(0,(pointerY-bounds.top)/bounds.height));
+			contact.style.setProperty('--contact-x',(x*100)+'%');contact.style.setProperty('--contact-y',(y*100)+'%');contact.classList.add('is-pointer-active');
+			contact.style.setProperty('--map-rx',((.5-y)*5)+'deg');contact.style.setProperty('--map-ry',((x-.5)*6)+'deg');
+			contact.style.setProperty('--social-rx',((y-.5)*4)+'deg');contact.style.setProperty('--social-ry',((.5-x)*5)+'deg');
+			const qr=$('.instagram-qr'),qrBounds=qr.getBoundingClientRect(),qrX=Math.min(1,Math.max(0,(pointerX-qrBounds.left)/qrBounds.width)),qrY=Math.min(1,Math.max(0,(pointerY-qrBounds.top)/qrBounds.height));
+			contact.style.setProperty('--qr-rx',((.5-qrY)*8)+'deg');contact.style.setProperty('--qr-ry',((qrX-.5)*8)+'deg');
+		});
+	},{passive:true});
+	contact.addEventListener('pointerleave',()=>{
+		if(framePending)cancelAnimationFrame(framePending);
+		framePending=0;contact.classList.remove('is-pointer-active');
+		['--map-rx','--map-ry','--social-rx','--social-ry','--qr-rx','--qr-ry'].forEach(property=>contact.style.removeProperty(property));
+	});
 })();

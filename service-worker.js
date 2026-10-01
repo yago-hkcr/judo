@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sensei-judo-offline-v2';
+const CACHE_NAME = 'sensei-judo-offline-v4';
 const APP_FILES = [
   './index.html',
   './judo-academia.html',
