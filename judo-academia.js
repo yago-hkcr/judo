@@ -66,7 +66,7 @@ drawObstacle=function(barrier){
 	gameCtx.fillStyle=palette.gold;gameCtx.fillRect(barrier.x+barrier.w*.4,top+4,barrier.w*.2,3)
 };
 draw=function(){
-	const scaleX=canvas.width/900,scaleY=canvas.height/280;gameCtx.setTransform(scaleX,0,0,scaleY,0,0);gameCtx.clearRect(0,0,900,280);
+	const mobileZoom=matchMedia('(max-width: 560px)').matches?1.6:1,scale=canvas.width/900*mobileZoom,gameCenter=450/mobileZoom;gameCtx.setTransform(scale,0,0,scale,0,0);gameCtx.clearRect(0,0,900,280);
 	gameCtx.fillStyle=palette.background;gameCtx.fillRect(0,0,900,280);
 	const wallGradient=gameCtx.createLinearGradient(0,0,0,ground);wallGradient.addColorStop(0,palette.wall);wallGradient.addColorStop(1,palette.background);gameCtx.fillStyle=wallGradient;gameCtx.fillRect(0,0,900,ground);
 	gameCtx.fillStyle=palette.beam;gameCtx.fillRect(0,24,900,3);gameCtx.fillRect(0,ground-7,900,7);gameCtx.fillRect(70,0,3,ground-7);gameCtx.fillRect(440,0,2,ground-7);gameCtx.fillRect(890,0,3,ground-7);
@@ -76,7 +76,7 @@ draw=function(){
 	gameCtx.globalAlpha=.55;for(let y=ground+32;y<280;y+=26){gameCtx.beginPath();gameCtx.moveTo(0,y);gameCtx.lineTo(900,y);gameCtx.stroke()}gameCtx.globalAlpha=1;
 	particles.forEach(particle=>{gameCtx.globalAlpha=Math.max(0,particle.life/420);gameCtx.fillStyle=palette.mark;gameCtx.beginPath();gameCtx.ellipse(particle.x,particle.y,particle.size,particle.size*.65,particle.angle,0,Math.PI*2);gameCtx.fill()});gameCtx.globalAlpha=1;
 	barriers.forEach(drawObstacle);drawJudoka();
-	if(gameOver){gameCtx.fillStyle='#0009';gameCtx.fillRect(0,0,900,280);gameCtx.fillStyle=palette.ink;gameCtx.textAlign='center';gameCtx.font='700 32px sans-serif';gameCtx.fillText('OSU! FIM DE JOGO',450,124);gameCtx.font='17px sans-serif';gameCtx.fillText('Toque na tela para tentar de novo',450,157)}
+	if(gameOver){gameCtx.fillStyle='#0009';gameCtx.fillRect(0,0,900,280);gameCtx.fillStyle=palette.ink;gameCtx.textAlign='center';gameCtx.font='700 32px sans-serif';gameCtx.fillText('OSU! FIM DE JOGO',gameCenter,124);gameCtx.font='17px sans-serif';gameCtx.fillText('Toque na tela para tentar de novo',gameCenter,157)}
 };
 function resizeCanvas(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);draw()}
 function emitDust(amount){for(let index=0;index<amount;index++)particles.push({x:judoka.x+17+Math.random()*12,y:ground-2,vx:(Math.random()-.55)*.16,vy:-.04-Math.random()*.16,size:2+Math.random()*3,life:220+Math.random()*200,angle:Math.random()*6.28})}
