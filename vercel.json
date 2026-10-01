@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
-      "destination": "/judo-academia.html"
+      "destination": "/judo-academia.html",
+      "permanent": false
     }
   ]
 }
